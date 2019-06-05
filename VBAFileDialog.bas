@@ -15,7 +15,7 @@ Option Explicit
 Private Const ACTION_BUTTON_PRESSED = -1
 Private Const CANCEL_BUTTON_PRESSED = 0
 
-Public Function VFD_GetFolderPath(Optional strPath As String = vbNullString) As String
+Public Function VFD_GetFolderPath(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "OK") As String
 
     ' Låter användaren bläddra fram sökvägen till en mapp och returnerar sökvägen eller vbNullString
     ' Vid upprepade anrop kommer dialogen ihåg mappen om den inte anges explicit
@@ -25,9 +25,12 @@ Public Function VFD_GetFolderPath(Optional strPath As String = vbNullString) As 
     
     Set f = Application.FileDialog(msoFileDialogFolderPicker)
     
-    If strPath <> vbNullString Then
-        f.InitialFileName = strPath
+    If strInitialFileName <> vbNullString Then
+        f.InitialFileName = strInitialFileName
     End If
+    
+    f.Title = strTitle
+    f.ButtonName = strButtonName
     
     lngReturn = f.Show
     
@@ -40,7 +43,7 @@ Public Function VFD_GetFolderPath(Optional strPath As String = vbNullString) As 
     
 End Function
 
-Public Function VFD_GetTextFileName(Optional strPath As String = vbNullString) As String
+Public Function VFD_GetTextFileName(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
 
     ' Öppnar en dialogruta för att hämta sökvägen till en textfil
     
@@ -48,9 +51,12 @@ Public Function VFD_GetTextFileName(Optional strPath As String = vbNullString) A
     Dim lngReturn As Long
     Set f = Application.FileDialog(msoFileDialogFilePicker)
     
-    If strPath <> vbNullString Then
-        f.InitialFileName = strPath
+    If strInitialFileName <> vbNullString Then
+        f.InitialFileName = strInitialFileName
     End If
+    
+    f.Title = strTitle
+    f.ButtonName = strButtonName
     
     Call f.Filters.Clear
     Call f.Filters.Add("Textfiler", "*.txt", 1)
@@ -68,7 +74,7 @@ Public Function VFD_GetTextFileName(Optional strPath As String = vbNullString) A
     
 End Function
 
-Public Function VFD_GetTextFileNameSem(Optional strPath As String = vbNullString) As String
+Public Function VFD_GetTextFileNameSem(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
 
     ' Öppnar en dialogruta för att hämta sökvägen till en textfil
     
@@ -76,9 +82,12 @@ Public Function VFD_GetTextFileNameSem(Optional strPath As String = vbNullString
     Dim lngReturn As Long
     Set f = Application.FileDialog(msoFileDialogFilePicker)
     
-    If strPath <> vbNullString Then
-        f.InitialFileName = strPath
+    If strInitialFileName <> vbNullString Then
+        f.InitialFileName = strInitialFileName
     End If
+    
+    f.Title = strTitle
+    f.ButtonName = strButtonName
     
     Call f.Filters.Clear
     Call f.Filters.Add("Semikolonseparerade filer", "*.sem", 1)
@@ -96,16 +105,19 @@ Public Function VFD_GetTextFileNameSem(Optional strPath As String = vbNullString
     
 End Function
 
-Public Function VFD_GetExcelFileName(Optional strPath As String = vbNullString) As String
+Public Function VFD_GetExcelFileName(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
 
     ' Öppnar en dialogruta för att spara en Excel-fil
     Dim f As FileDialog
     Dim lngReturn As Long
     Set f = Application.FileDialog(msoFileDialogFilePicker)
     
-    If strPath <> vbNullString Then
-        f.InitialFileName = strPath
+    If strInitialFileName <> vbNullString Then
+        f.InitialFileName = strInitialFileName
     End If
+    
+    f.Title = strTitle
+    f.ButtonName = strButtonName
     
     Call f.Filters.Clear
     Call f.Filters.Add("Excel-filer", "*.xlsx,*.xls", 1)
