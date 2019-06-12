@@ -84,7 +84,7 @@ Public Sub FormateraEconomaTransaktioner()
     
     ' Slå upp de unika ansvaren ur transaktionslistan till ett nytt blad
     ' Funktionen AdvancedFilter förutsätter/antar att sökområdet innehåller en rubrik. Rubeiken ska alltså inkluderas i sökningen.
-    Range(objTransSheet.Name & "!D:D").AdvancedFilter Action:=xlFilterCopy, CopyToRange:=Range(objLookupSheet.Name & "!A1"), Unique:=True
+    Range(objTransSheet.Name & "!E:E").AdvancedFilter Action:=xlFilterCopy, CopyToRange:=Range(objLookupSheet.Name & "!A1"), Unique:=True
     
     ' Hitta sista raden i det nya bladet
     Dim intLastLookupRow As Integer
@@ -121,7 +121,7 @@ Public Sub FormateraEconomaTransaktioner()
         
         ' Loopa igenom transaktionslistan. Kopiera alla rader som matchar till den nya arbetsboken
         For j = 2 To intLastTransRow
-            If objTransSheet.Cells(j, 4) = strAnsvar Then
+            If objTransSheet.Cells(j, 5) = strAnsvar Then
                 objTransSheet.Rows(j).Copy Destination:=objExportWorkSheet.Range("A" & k)
                 k = k + 1
             End If
@@ -200,6 +200,9 @@ End Sub
 Private Sub FormateraBudget(mySheet As Worksheet)
 
     ' Formaterar det exporterade bladet
+    
+    Columns("A:G").ColumnWidth = 20
+    Columns("B:B").ColumnWidth = 25
     
     Application.PrintCommunication = False
     With mySheet.PageSetup
