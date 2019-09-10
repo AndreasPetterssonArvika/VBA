@@ -1,0 +1,40 @@
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui">
+	<ribbon startFromScratch="false">
+		<tabs>
+				<tab idMso="TabHomeAccess" visible="false"/>
+				<tab id="myCustomRibbon" label="Kontohantering">
+					<group id="userMgmt" label="Användarhantering">
+						<button id="btnNewUser" label="Ny användare" size="normal" imageMso="ViewsFormView" onAction="mcrCreateNewUser"/>
+						<button id="btnUserActions" label="Ändra användare" size="normal" imageMso="ViewsFormView" onAction="mcrOpenUserActions"/>
+						<button id="btnAnonymousUsers" label="Anonyma användare" size="normal" imageMso="ViewsFormView" onAction="mcrCreateAnonymousUsers"/>
+					</group>
+					<group id="groupMgmt" label="Grupphantering">
+						<button id="btnUpdateAutoPopulated" label="Uppdatera gruppmedlemmar" size="normal" imageMso="CreateReport" onAction="mcrUpdateAutoPopulatedGroups"/>
+						<button id="btnUpdateGroups" label="Uppdatera grupper" size="normal" imageMso="CreateReport" onAction="mcrCreateAndRemoveAutomaticGroups"/>
+					</group>
+					<group id="importUpdates" label="Importera data">
+						<button id="btnUpdateUsersFromInput" label="Uppdatera användare" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrUpdateUsers"/>
+					</group>
+					<group id="exportData" label="Exportera data">
+						<button id="btnExportMailListForAdmin" label="Administratörslista" size="normal" imageMso="ViewsFormView" onAction="mcrExportMailListForAdmin"/>
+						<button id="btnExportPasswordListForSchool" label="Lösenordslista elever" size="normal" imageMso="ViewsFormView" onAction="mcrExportPasswordListForSchool"/>
+						<button id="btnSoftogramExport" label="Softogram-export" size="normal" imageMso="ExportExcel" onAction="mcrSoftogramExport"/>
+						<button id="btnGDPRExport" label="GDPR-export" size="normal" imageMso="ExportWord" onAction="mcrGDPRExport"/>
+					</group>
+					<group id="lookupData" label="Slå upp data">
+						<button id="btnSearchADToTable" label="Sök AD till tabell" size="normal" imageMso="ViewsFormView" onAction="mcrOpenSearchADToTable"/>
+					</group>
+					<group id="openPrograms" label="Externa program">
+						<button id="btnOpenADUC" label="Öppna ADUC" size="normal" imageMso="CreateReport" onAction="mcrOpenADUC"/>
+						<button id="btnOpenRDP" label="Öppna RDP" size="normal" imageMso="CreateReport" onAction="mcrOpenRDP"/>
+					</group>
+					<group id="settings" label="Inställningar">
+						<button id="btnInitRandomizer" label="Slumptalsinit" size="normal" imageMso="CreateReport" onAction="mcrInitRandomizer"/>
+						<button id="btnShowLog" label="Visa logg" size="normal" imageMso="CreateReport" onAction="mcrOpenLog"/>
+						<button id="btnUSysRibbon" label="Ändra Ribbon" size="normal" imageMso="CreateReport" onAction="mcrOpenUSysRibbonsForm"/>
+						<button id="btnBackupToText" label="Textbackup" size="normal" imageMso="FileBackupDatabase" onAction="mcrBackupToText"/>
+					</group>
+				</tab>
+		</tabs>
+	</ribbon>
+</customUI>
