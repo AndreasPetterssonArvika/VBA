@@ -29,6 +29,9 @@
 						<button id="btnOpenADUC" label="Öppna ADUC" size="normal" imageMso="CreateReport" onAction="mcrOpenADUC"/>
 						<button id="btnOpenRDP" label="Öppna RDP" size="normal" imageMso="CreateReport" onAction="mcrOpenRDP"/>
 					</group>
+					<group id="otherFunctions" label="Andra funktioner">
+						<button id="btnOpenMailAssistant" label="Mailassistent" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrOpenMailAssistant"/>
+					</group>
 					<group id="settings" label="Inställningar">
 						<button id="btnInitRandomizer" label="Slumptalsinit" size="normal" imageMso="CreateReport" onAction="mcrInitRandomizer"/>
 						<button id="btnShowLog" label="Visa logg" size="normal" imageMso="CreateReport" onAction="mcrOpenLog"/>
