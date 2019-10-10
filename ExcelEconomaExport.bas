@@ -1,13 +1,21 @@
-Attribute VB_Name = "ExcelEconomaExport"
 ' Delar upp och formaterar om exporterade Excel-filer från Economa.
-' Förutsätter att modulen VBAFileDialog finns.
+' Förutsätter att modulen ExcelUtilityFunctions finns.
 
 Option Explicit
 
 Public Sub FormateraEconomaBudget()
 
-    Dim objDataWorkbook As Workbook
-    Set objDataWorkbook = ActiveWorkbook
+    ' Set start time for timer, only needed for performance testing
+    'Dim dTime As Double
+    'dTime = MicroTimer
+    
+    TurnOffStuff
+
+    Dim shSource As Worksheet
+    Set shSource = ActiveWorkbook.Sheets(1)
+    
+    Dim objNewWorkbook As Workbook
+    Dim shOutput As Worksheet
     
     Dim strPath As String
     strPath = VFD_GetFolderPath(ActiveWorkbook.Path, "Välj målmapp", "Välj")
@@ -23,14 +31,11 @@ Public Sub FormateraEconomaBudget()
     intCurrentRow = 1
     intNextRow = 0
     
-    Dim strRange As String
-    
     Dim intNumExports As Integer
     intNumExports = 0
     
     ' Leta upp första förekomst av ANSVAR och sätt första raden. Hantera att det eventuellt saknas
-    strRange = "A" & intCurrentRow & ":A10000"
-    Set foundCell = ActiveSheet.Range(strRange).Find(What:=strSearchTerm)
+    Set foundCell = shSource.Range(shSource.Cells(1, 1), shSource.Cells(10000, 1)).Find(What:=strSearchTerm)
     If foundCell Is Nothing Then
         ' Ordet ANSVAR saknas i första kolumnen, fel på bladet
         Call MsgBox("Ordet ANSVAR saknas i första kolumnen. Kontrollera att du är i rätt Excelblad", vbOKOnly, "Budgetformatering Förskola")
@@ -43,8 +48,7 @@ Public Sub FormateraEconomaBudget()
     Do While Not foundCell Is Nothing
         
         ' Sök nästa rad med ANSVAR
-        strRange = "A" & intCurrentRow + 1 & ":A10000"
-        Set foundCell = objDataWorkbook.ActiveSheet.Range(strRange).Find(What:=strSearchTerm)
+        Set foundCell = shSource.Range(shSource.Cells(intCurrentRow + 1, 1), shSource.Cells(10000, 1)).Find(What:=strSearchTerm)
         If foundCell Is Nothing Then
             ' Ingen nästa cell, sista enheten. Sök sista raden i boken
             intNextRow = Cells(Rows.Count, 1).End(xlUp).Row
@@ -53,25 +57,56 @@ Public Sub FormateraEconomaBudget()
             intNextRow = foundCell.Row
         End If
         
-        Call CopyToNewWorkbook(objDataWorkbook, intCurrentRow + 1, intNextRow - 1, strPath)
+        Set objNewWorkbook = Workbooks.Add
+        Application.DisplayAlerts = False
+        objNewWorkbook.Sheets(3).Delete
+        objNewWorkbook.Sheets(2).Delete
+        Application.DisplayAlerts = True
+        Set shOutput = objNewWorkbook.Sheets(1)
+        
+        shOutput.Range("A1:G1").Value = shSource.Range("A1:G1").Value
+        shOutput.Range(shOutput.Cells(2, 1), shOutput.Cells(1 + intNextRow - intCurrentRow - 1, 7)).Value = shSource.Range(shSource.Cells(intCurrentRow, 1), shSource.Cells(intNextRow - 1, 7)).Value
+        
         intNumExports = intNumExports + 1
         intCurrentRow = intNextRow
+        
+        ' Sätter namn på bladet
+        shOutput.Name = shOutput.Cells(3, 1) & " - " & shOutput.Cells(3, 2)
+            
+        Call FormateraBudget(shOutput)
+        
+        ' Markerar längst upp till vänster
+        Range("A1").Select
+        
+        Call objNewWorkbook.SaveAs(strPath & "\" & shOutput.Name)
+        
+        
+        objNewWorkbook.Close
+        Set objNewWorkbook = Nothing
+        
         
         If foundCell Is Nothing Then
             Exit Do
         End If
         
-        If intNumExports > 50 Then
+        If intNumExports > 100 Then
             Exit Sub
         End If
     
     Loop
+    
+    TurnOnStuff
+    
+    ' Print the result of the timer
+    'Debug.Print vbCrLf & "Time is: " & (MicroTimer - dTime) * 1000
     
     Call MsgBox("Exporten är klar" & vbCrLf & "Antal exporterade enheter: " & intNumExports, vbOKOnly, "Budgetformatering Förskola")
     
 End Sub
 
 Public Sub FormateraEconomaTransaktioner()
+
+    TurnOffStuff
         
     Dim objTransSheet As Worksheet
     Set objTransSheet = ActiveSheet
@@ -83,8 +118,8 @@ Public Sub FormateraEconomaTransaktioner()
     Set objLookupSheet = ActiveWorkbook.Sheets.Add
     
     ' Slå upp de unika ansvaren ur transaktionslistan till ett nytt blad
-    ' Funktionen AdvancedFilter förutsätter/antar att sökområdet innehåller en rubrik. Rubeiken ska alltså inkluderas i sökningen.
-    Range(objTransSheet.Name & "!E:E").AdvancedFilter Action:=xlFilterCopy, CopyToRange:=Range(objLookupSheet.Name & "!A1"), Unique:=True
+    ' Funktionen AdvancedFilter förutsätter/antar att sökområdet innehåller en rubrik. Rubriken ska alltså inkluderas i sökningen.
+    Range(objTransSheet.Name & "!D:D").AdvancedFilter Action:=xlFilterCopy, CopyToRange:=Range(objLookupSheet.Name & "!A1"), Unique:=True
     
     ' Hitta sista raden i det nya bladet
     Dim intLastLookupRow As Integer
@@ -121,7 +156,7 @@ Public Sub FormateraEconomaTransaktioner()
         
         ' Loopa igenom transaktionslistan. Kopiera alla rader som matchar till den nya arbetsboken
         For j = 2 To intLastTransRow
-            If objTransSheet.Cells(j, 5) = strAnsvar Then
+            If objTransSheet.Cells(j, 4) = strAnsvar Then
                 objTransSheet.Rows(j).Copy Destination:=objExportWorkSheet.Range("A" & k)
                 k = k + 1
             End If
@@ -141,68 +176,15 @@ Public Sub FormateraEconomaTransaktioner()
     objLookupSheet.Delete
     Application.DisplayAlerts = True
     
+    TurnOnStuff
+    
     Call MsgBox("Exporten är klar" & vbCrLf & "Antal exporterade enheter: " & intNumExports, vbOKOnly, "Transaktionsformatering Förskola")
-    
-End Sub
-
-Private Sub CopyToNewWorkbook(objWorkbook As Workbook, intFirstRow As Integer, intLastRow As Integer, strTargetPath As String)
-
-    ' Öppnar nytt kalkylblad
-    Dim newWorkbook As Workbook
-    Set newWorkbook = Workbooks.Add
-    
-    'Kopierar rubriker
-    objWorkbook.Activate
-    Range("A1:G1").Select
-    Selection.Copy
-    
-    ' Klistrar in i nya kalkylbladet
-    newWorkbook.Activate
-    ActiveSheet.Paste
-    
-    ' Kopierar budgetrader
-    objWorkbook.Activate
-    Rows(CStr(intFirstRow) & ":" & CStr(intLastRow)).Select
-    Application.CutCopyMode = False
-    Selection.Copy
-    
-    ' Klistrar in budgetrader
-    newWorkbook.Activate
-    Range("A2").Select
-    ActiveSheet.Paste
-    
-    ' Kastar överflödiga blad
-    Application.DisplayAlerts = False
-    Sheets("Blad3").Select
-    Application.CutCopyMode = False
-    ActiveWindow.SelectedSheets.Delete
-    Sheets("Blad2").Select
-    ActiveWindow.SelectedSheets.Delete
-    Application.DisplayAlerts = True
-    
-    ' Sätter namn på bladet
-    Dim strNewName As String
-    Sheets("Blad1").Select
-    strNewName = Cells(2, 1) & " - " & Cells(2, 2)
-    Sheets("Blad1").Name = strNewName
-    
-    Call FormateraBudget(ActiveSheet)
-    
-    ' Markerar längst upp till vänster
-    Range("A1").Select
-    
-    Call newWorkbook.SaveAs(strTargetPath & "\" & strNewName)
-    
-    newWorkbook.Close
     
 End Sub
 
 Private Sub FormateraBudget(mySheet As Worksheet)
 
     ' Formaterar det exporterade bladet
-    
-    Columns("A:G").ColumnWidth = 20
-    Columns("B:B").ColumnWidth = 25
     
     Application.PrintCommunication = False
     With mySheet.PageSetup
@@ -224,10 +206,7 @@ Private Sub FormateraTransaktioner(mySheet As Worksheet)
     mySheet.Columns("C:C").EntireColumn.AutoFit
     mySheet.Columns("E:E").EntireColumn.AutoFit
     mySheet.Columns("F:F").EntireColumn.AutoFit
-    mySheet.Columns("D:D").Select
-    With Selection
-        .HorizontalAlignment = xlLeft
-    End With
+    mySheet.Columns("D:D").HorizontalAlignment = xlLeft
     
     Application.PrintCommunication = False
     With mySheet.PageSetup
@@ -241,3 +220,4 @@ Private Sub FormateraTransaktioner(mySheet As Worksheet)
     Application.PrintCommunication = True
     
 End Sub
+
