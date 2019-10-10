@@ -1,5 +1,8 @@
 Option Explicit
 
+Private Const ACTION_BUTTON_PRESSED = -1
+Private Const CANCEL_BUTTON_PRESSED = 0
+
 Private Declare Function getFrequency Lib "kernel32" _
 Alias "QueryPerformanceFrequency" (cyFrequency As Currency) As Long
 Private Declare Function getTickCount Lib "kernel32" _
@@ -164,7 +167,7 @@ Public Function VFD_GetExcelFileName(Optional strInitialFileName As String = vbN
     
 End Function
 
-Sub ProtectBook()
+Public Sub ProtectBook()
 
     ' Funktionen skyddar alla blad i en arbetsbok med samma lösenord
     ' Funktionen visar lösenordet i klartext, värt att lösa någon gång
@@ -207,7 +210,7 @@ Sub ProtectBook()
     
 End Sub
 
-Sub UnprotectBook()
+Public Sub UnprotectBook()
 
     ' Funktionen tar bort skyddet från en arbetsbok
 
