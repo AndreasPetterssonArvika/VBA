@@ -8,19 +8,19 @@ Alias "QueryPerformanceFrequency" (cyFrequency As Currency) As Long
 Private Declare Function getTickCount Lib "kernel32" _
 Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
 
-Public Sub TurnOffStuff()
+Private Sub TurnOffStuff()
     Application.Calculation = xlCalculationManual
     Application.ScreenUpdating = False
     Application.EnableEvents = False
 End Sub
 
-Public Sub TurnOnStuff()
+Private Sub TurnOnStuff()
     Application.Calculation = xlCalculationAutomatic
     Application.ScreenUpdating = True
     Application.EnableEvents = True
 End Sub
 
-Public Function MicroTimer() As Double
+Private Function MicroTimer() As Double
 
 ' Returns seconds.
 Dim cyTicks1 As Currency
@@ -47,7 +47,7 @@ End Function
 ' - msoFileDialogOpen, öppnar en fil som applikationen kan hantera.
 ' - msoFileDialogSaveAs, sparar en fil i ett format som applikationen kan hantera.
 
-Public Function VFD_GetFolderPath(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "OK") As String
+Private Function VFD_GetFolderPath(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "OK") As String
 
     ' Låter användaren bläddra fram sökvägen till en mapp och returnerar sökvägen eller vbNullString
     ' Vid upprepade anrop kommer dialogen ihåg mappen om den inte anges explicit
@@ -75,7 +75,7 @@ Public Function VFD_GetFolderPath(Optional strInitialFileName As String = vbNull
     
 End Function
 
-Public Function VFD_GetTextFileName(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
+Private Function VFD_GetTextFileName(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
 
     ' Öppnar en dialogruta för att hämta sökvägen till en textfil
     
@@ -106,7 +106,7 @@ Public Function VFD_GetTextFileName(Optional strInitialFileName As String = vbNu
     
 End Function
 
-Public Function VFD_GetTextFileNameSem(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
+Private Function VFD_GetTextFileNameSem(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
 
     ' Öppnar en dialogruta för att hämta sökvägen till en textfil
     
@@ -137,7 +137,7 @@ Public Function VFD_GetTextFileNameSem(Optional strInitialFileName As String = v
     
 End Function
 
-Public Function VFD_GetExcelFileName(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
+Private Function VFD_GetExcelFileName(Optional strInitialFileName As String = vbNullString, Optional strTitle As String = "Bläddra", Optional strButtonName As String = "Öppna") As String
 
     ' Öppnar en dialogruta för att spara en Excel-fil
     Dim f As FileDialog
