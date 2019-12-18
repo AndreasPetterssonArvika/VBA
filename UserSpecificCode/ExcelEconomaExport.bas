@@ -38,7 +38,7 @@ Public Sub FormateraEconomaBudget()
     ' Leta upp första förekomst av ANSVAR och sätt första raden. Hantera att det eventuellt saknas
     Set foundCell = shSource.Range(shSource.Cells(1, 1), shSource.Cells(10000, 1)).Find(What:=strSearchTerm)
     If foundCell Is Nothing Then
-        ' Ordet ANSVAR saknas i första kolumnen, fel på bladet
+        ' Ordet ANSVAR saknas helt i första kolumnen, fel på bladet
         Call MsgBox("Ordet ANSVAR saknas i första kolumnen. Kontrollera att du är i rätt Excelblad", vbOKOnly, "Budgetformatering Förskola")
         Exit Sub
     Else
@@ -51,8 +51,9 @@ Public Sub FormateraEconomaBudget()
         ' Sök nästa rad med ANSVAR
         Set foundCell = shSource.Range(shSource.Cells(intCurrentRow + 1, 1), shSource.Cells(10000, 1)).Find(What:=strSearchTerm)
         If foundCell Is Nothing Then
-            ' Ingen nästa cell, sista enheten. Sök sista raden i boken
-            intNextRow = Cells(Rows.Count, 1).End(xlUp).Row
+            ' Ingen nästa cell, sista enheten. Sök sista raden i boken.
+            ' Lägg till två eftersom kopieringen räknar bort tomraden och raden med "ANSVAR" efter nuvarande budget
+            intNextRow = Cells(Rows.Count, 1).End(xlUp).Row + 2
         Else
             ' Cell hittad, ange raden för cellen
             intNextRow = foundCell.Row
@@ -65,7 +66,13 @@ Public Sub FormateraEconomaBudget()
         Application.DisplayAlerts = True
         Set shOutput = objNewWorkbook.Sheets(1)
         
+        ' Formatera utdatabladets första kolumn som text
+        shOutput.Columns("A:A").EntireColumn.NumberFormat = "@"
+        
+        ' Kopiera bladets rubriker till utdatabladet
         shOutput.Range("A1:G1").Value = shSource.Range("A1:G1").Value
+        
+        ' Kopiera den aktuella budgeten till utdatabladet
         shOutput.Range(shOutput.Cells(2, 1), shOutput.Cells(1 + intNextRow - intCurrentRow - 1, 7)).Value = shSource.Range(shSource.Cells(intCurrentRow, 1), shSource.Cells(intNextRow - 1, 7)).Value
         
         intNumExports = intNumExports + 1
@@ -73,7 +80,8 @@ Public Sub FormateraEconomaBudget()
         
         ' Sätter namn på bladet
         shOutput.Name = shOutput.Cells(3, 1) & " - " & shOutput.Cells(3, 2)
-            
+        
+        ' Formatera utdatabladet
         Call FormateraBudget(shOutput)
         
         ' Markerar längst upp till vänster
