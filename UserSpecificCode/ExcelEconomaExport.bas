@@ -1,3 +1,4 @@
+Attribute VB_Name = "ExcelEconomaExport"
 ' Delar upp och formaterar om exporterade Excel-filer från Economa.
 ' Förutsätter att modulen ExcelUtilityFunctions finns.
 
@@ -119,7 +120,7 @@ Public Sub FormateraEconomaTransaktioner()
     
     ' Slå upp de unika ansvaren ur transaktionslistan till ett nytt blad
     ' Funktionen AdvancedFilter förutsätter/antar att sökområdet innehåller en rubrik. Rubriken ska alltså inkluderas i sökningen.
-    Range(objTransSheet.Name & "!D:D").AdvancedFilter Action:=xlFilterCopy, CopyToRange:=Range(objLookupSheet.Name & "!A1"), Unique:=True
+    Range(objTransSheet.Name & "!E:E").AdvancedFilter Action:=xlFilterCopy, CopyToRange:=Range(objLookupSheet.Name & "!A1"), Unique:=True
     
     ' Hitta sista raden i det nya bladet
     Dim intLastLookupRow As Integer
@@ -156,7 +157,7 @@ Public Sub FormateraEconomaTransaktioner()
         
         ' Loopa igenom transaktionslistan. Kopiera alla rader som matchar till den nya arbetsboken
         For j = 2 To intLastTransRow
-            If objTransSheet.Cells(j, 4) = strAnsvar Then
+            If objTransSheet.Cells(j, 5) = strAnsvar Then
                 objTransSheet.Rows(j).Copy Destination:=objExportWorkSheet.Range("A" & k)
                 k = k + 1
             End If
@@ -186,6 +187,36 @@ Private Sub FormateraBudget(mySheet As Worksheet)
 
     ' Formaterar det exporterade bladet
     
+    ' Högerställ kolumnerna C till G och lägg text högst upp i cellen
+    Columns("C:G").Select
+    With Selection
+        .HorizontalAlignment = xlRight
+        .VerticalAlignment = xlTop
+    End With
+    
+    ' Vänsterställ kolumnerna A och B
+    Columns("A:B").Select
+    With Selection
+        .HorizontalAlignment = xlLeft
+        .VerticalAlignment = xlBottom
+    End With
+    
+    ' Sätt rubriken i B1 uptill i cellen
+    Range("B1").Select
+    With Selection
+        .VerticalAlignment = xlTop
+    End With
+
+    ' Justera kolumnbredder
+    Columns("A:A").ColumnWidth = 20
+    Columns("B:B").ColumnWidth = 20
+    Columns("C:C").ColumnWidth = 20
+    Columns("D:D").ColumnWidth = 20
+    Columns("E:E").ColumnWidth = 20
+    Columns("F:F").ColumnWidth = 20
+    Columns("G:G").ColumnWidth = 20
+    
+    ' Sätter utskriftsformat
     Application.PrintCommunication = False
     With mySheet.PageSetup
         .PrintGridlines = True
