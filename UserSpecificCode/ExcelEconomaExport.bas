@@ -29,8 +29,12 @@ Public Sub FormateraEconomaBudget()
     
     Dim intCurrentRow As Integer
     Dim intNextRow As Integer
+    Dim intLastCopyRow As Integer
+    Dim intNumRowsToCopy As Integer
     intCurrentRow = 1
     intNextRow = 0
+    intLastCopyRow = 0
+    intNumRowsToCopy = 0
     
     Dim intNumExports As Integer
     intNumExports = 0
@@ -48,16 +52,20 @@ Public Sub FormateraEconomaBudget()
     ' Sök igenom bladet efter resultat och exportera
     Do While Not foundCell Is Nothing
         
-        ' Sök nästa rad med ANSVAR
+        ' Sök nästa rad med ANSVAR.
+        ' Söker de första 10000 raderna vilket borde räcka med marginal eftersom källdatabladet idag har ca 650 rader
         Set foundCell = shSource.Range(shSource.Cells(intCurrentRow + 1, 1), shSource.Cells(10000, 1)).Find(What:=strSearchTerm)
         If foundCell Is Nothing Then
-            ' Ingen nästa cell, sista enheten. Sök sista raden i boken.
-            ' Lägg till två eftersom kopieringen räknar bort tomraden och raden med "ANSVAR" efter nuvarande budget
-            intNextRow = Cells(Rows.Count, 1).End(xlUp).Row + 2
+            ' Ingen nästa cell, sista enheten. Sök sista raden i boken och dra av en rad eftersom sista raden innehåller totalerna för hela bladet
+            intLastCopyRow = Cells(Rows.Count, 1).End(xlUp).Row - 1
         Else
-            ' Cell hittad, ange raden för cellen
+            ' Cell med ANSVAR hittad, ange raden för cellen och lägg även in sista raden som ska kopieras vilket är två rader ovanför
             intNextRow = foundCell.Row
+            intLastCopyRow = intNextRow - 2
         End If
+        
+        ' Räkna ut antalet rader som ska kopieras
+        intNumRowsToCopy = intLastCopyRow - intCurrentRow + 1
         
         Set objNewWorkbook = Workbooks.Add
         Application.DisplayAlerts = False
@@ -73,7 +81,7 @@ Public Sub FormateraEconomaBudget()
         shOutput.Range("A1:G1").Value = shSource.Range("A1:G1").Value
         
         ' Kopiera den aktuella budgeten till utdatabladet
-        shOutput.Range(shOutput.Cells(2, 1), shOutput.Cells(1 + intNextRow - intCurrentRow - 1, 7)).Value = shSource.Range(shSource.Cells(intCurrentRow, 1), shSource.Cells(intNextRow - 1, 7)).Value
+        shOutput.Range(shOutput.Cells(2, 1), shOutput.Cells(intNumRowsToCopy + 1, 7)).Value = shSource.Range(shSource.Cells(intCurrentRow, 1), shSource.Cells(intLastCopyRow, 7)).Value
         
         intNumExports = intNumExports + 1
         intCurrentRow = intNextRow
