@@ -34,6 +34,7 @@
 					</group>
 					<group id="otherFunctions" label="Andra funktioner">
 						<button id="btnOpenMailAssistant" label="Mailassistent" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrOpenMailAssistant"/>
+						<button id="btnOpenEquitracUpdate" label="Equitracdata" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrOpenEquitracUpdate"/>
 					</group>
 					<group id="settings" label="Inställningar">
 						<button id="btnInitRandomizer" label="Slumptalsinit" size="normal" imageMso="CreateReport" onAction="mcrInitRandomizer"/>
