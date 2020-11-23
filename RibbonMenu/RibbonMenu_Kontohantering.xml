@@ -37,6 +37,7 @@
 						<button id="btnOpenEquitracUpdate" label="Equitracdata" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrOpenEquitracUpdate"/>
 					</group>
 					<group id="settings" label="Inställningar">
+						<button id="btnOpenFoTables" label="Startformulär" size="normal" imageMso="ViewsFormView" onAction="mcrOpenFoTables"/>
 						<button id="btnInitRandomizer" label="Slumptalsinit" size="normal" imageMso="CreateReport" onAction="mcrInitRandomizer"/>
 						<button id="btnShowLog" label="Visa logg" size="normal" imageMso="CreateReport" onAction="mcrOpenLog"/>
 						<button id="btnUSysRibbon" label="Ändra Ribbon" size="normal" imageMso="CreateReport" onAction="mcrOpenUSysRibbonsForm"/>
