@@ -1,14 +1,21 @@
-Attribute VB_Name = "ExcelUtilityFunctions"
 Option Explicit
 Option Private Module
 
 Private Const ACTION_BUTTON_PRESSED = -1
 Private Const CANCEL_BUTTON_PRESSED = 0
 
+' PtrSafe declaration for VBA7
+#If VBA7 Then
+Private Declare PtrSafe Function getFrequency Lib "kernel32" _
+Alias "QueryPerformanceFrequency" (cyFrequency As Currency) As Long
+Private Declare PtrSafe Function getTickCount Lib "kernel32" _
+Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
+#Else
 Private Declare Function getFrequency Lib "kernel32" _
 Alias "QueryPerformanceFrequency" (cyFrequency As Currency) As Long
 Private Declare Function getTickCount Lib "kernel32" _
 Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
+#End If
 
 Public Sub TurnOffStuff()
     Application.Calculation = xlCalculationManual
