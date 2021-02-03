@@ -4,6 +4,9 @@ Attribute VB_Name = "ExcelEconomaExport"
 
 Option Explicit
 
+' Visas bl a när man försöker index för Excelblad som inte finns
+Public Const INDEX_OUT_OF_RANGE = 9
+
 Public Sub FormateraEconomaBudget()
 
     ' Set start time for timer, only needed for performance testing
@@ -69,8 +72,34 @@ Public Sub FormateraEconomaBudget()
         
         Set objNewWorkbook = Workbooks.Add
         Application.DisplayAlerts = False
+        
+        ' Fel när blad 2 och 3 ska tas bort ur den nya Excelboken
+		' Detta beror på att Office 365 bara har ett blad i nya arbetsböcker.
+		On Error Resume Next
         objNewWorkbook.Sheets(3).Delete
+        If Err.Number = INDEX_OUT_OF_RANGE Then
+            ' Fliken saknas, normalt i Office 365. Rensa bara felkoden.
+            Err.Clear
+        ElseIf Err.Number <> 0 Then
+            ' Något annat fel har inträffat, meddela i dialogruta
+            Call MsgBox("Fel vid körning" & vbCrLf & "Felkod: " & Err.Number & vbCrLf & "Felmeddelanden: " & Err.Description, vbOKOnly, "Fel vid körning")
+            Exit Sub
+        End If
+        On Error GoTo 0
+
+        On Error Resume Next
         objNewWorkbook.Sheets(2).Delete
+        If Err.Number = INDEX_OUT_OF_RANGE Then
+            ' Fliken saknas, normalt i Office 365. Rensa bara felkoden.
+            Err.Clear
+        ElseIf Err.Number <> 0 Then
+            ' Något annat fel har inträffat, meddela i dialogruta
+            Call MsgBox("Fel vid körning" & vbCrLf & "Felkod: " & Err.Number & vbCrLf & "Felmeddelanden: " & Err.Description, vbOKOnly, "Fel vid körning")
+            Exit Sub
+        End If
+        On Error GoTo 0
+        
+        
         Application.DisplayAlerts = True
         Set shOutput = objNewWorkbook.Sheets(1)
         
