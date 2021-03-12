@@ -17,6 +17,7 @@
 						<button id="btnUpdateVUXStudents" label="Uppdatera VUX-elever" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrUpdateVUXStudents"/>
 						<button id="btnBulkUpdatePhoneNumbers" label="Uppdatera telefonnummer" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrBulkUpdatePhoneNumbers"/>
 						<button id="btnUpdateGoogle2SVStatus" label="Uppdatera Google tvåfaktor" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrUpdateGoogle2SVStatus"/>
+						<button id="btnUpdateVFUStudents" label="Uppdatera VFU" size="normal" imageMso="GetExternalDataFromOtherSources" onAction="mcrUpdateVFUStudents"/>
 					</group>
 					<group id="exportData" label="Exportera data">
 						<button id="btnExportMailListForAdmin" label="Administratörslista" size="normal" imageMso="ViewsFormView" onAction="mcrExportMailListForAdmin"/>
