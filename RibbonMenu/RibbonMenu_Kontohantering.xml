@@ -24,9 +24,11 @@
 						<button id="btnExportPasswordListForSchool" label="Lösenordslista elever" size="normal" imageMso="ViewsFormView" onAction="mcrExportPasswordListForSchool"/>
 						<button id="btnSoftogramExport" label="Softogram-export" size="normal" imageMso="ExportExcel" onAction="mcrSoftogramExport"/>
 						<button id="btnGDPRExport" label="GDPR-export" size="normal" imageMso="ExportWord" onAction="mcrGDPRExport"/>
+						<button id="btnAdminADExport" label="Export till admin-AD" size="normal" imageMso="ExportExcel" onAction="mcrExportUsersForAdmin"/>
 					</group>
 					<group id="lookupData" label="Slå upp data">
 						<button id="btnSearchADToTable" label="Sök AD till tabell" size="normal" imageMso="ViewsFormView" onAction="mcrOpenSearchADToTable"/>
+						<button id="btnOpenSavedSearches" label="Sparade sökningar" size="normal" imageMso="ViewsFormView" onAction="mcrOpenSavedSearches"/>
 					</group>
 					<group id="openPrograms" label="Externa program">
 						<button id="btnOpenADUC" label="Öppna ADUC" size="normal" imageMso="CreateReport" onAction="mcrOpenADUC"/>
